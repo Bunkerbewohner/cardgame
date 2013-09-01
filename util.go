@@ -2,6 +2,7 @@ package main
 
 import glfw "github.com/go-gl/glfw3"
 
+// Gets the screen size of the first monitor
 func GetScreenSize() (int, int) {
 	monitors, err := glfw.GetMonitors()
 	if err == nil {
