@@ -5,7 +5,7 @@ import (
 	"fmt"
 	gl "github.com/go-gl/gl"
 	glfw "github.com/go-gl/glfw3"
-	glh "github.com/go-gl/glh"
+	//glh "github.com/go-gl/glh"
 )
 
 func onError(err glfw.ErrorCode, description string) {
@@ -37,11 +37,13 @@ func main() {
 	gl.ClearColor(0.5, 0.5, 0.75, 0)
 	gl.Ortho(0, 800, 0, 600, 0, 1)
 
+	playfield := NewPlayfield()
+
 	for !window.ShouldClose() {
 		gl.Clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+		//gl.LoadIdentity()
 
-		gl.Color3f(1.0, 0, 0)
-		glh.DrawQuadi(100, 100, 200, 300)
+		playfield.Draw()
 
 		window.SwapBuffers()
 		glfw.PollEvents()
