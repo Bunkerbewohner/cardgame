@@ -1,6 +1,7 @@
 package main
 
 import gl "github.com/go-gl/gl"
+import rand "math/rand"
 
 type Slot struct {
 	card    PlayCard
@@ -16,8 +17,12 @@ type Playfield struct {
 
 func NewPlayfield() *Playfield {
 	playfield := new(Playfield)
+
 	for i := 0; i < 5; i++ {
+		playfield.playerCards[i] = *NewRandomDeckCard()
 		playfield.playerCards[i].Owner = PlayerID
+
+		playfield.opponentCards[i] = *NewRandomDeckCard()
 		playfield.opponentCards[i].Owner = OpponentID
 	}
 
@@ -26,6 +31,11 @@ func NewPlayfield() *Playfield {
 			index := i*4 + j
 			playfield.slots[index].x = i
 			playfield.slots[index].y = j
+			playfield.slots[index].card = *new(PlayCard)
+			playfield.slots[index].card.Card = NewRandomDeckCard()
+			playfield.slots[index].card.Owner = 1 + rand.Int()%2
+			playfield.slots[index].card.X = i
+			playfield.slots[index].card.Y = j
 		}
 	}
 
