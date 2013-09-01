@@ -14,6 +14,7 @@ func onError(err glfw.ErrorCode, description string) {
 
 func main() {
 	fmt.Printf("Launching cardgame...\n")
+
 	glfw.SetErrorCallback(onError)
 
 	if !glfw.Init() {

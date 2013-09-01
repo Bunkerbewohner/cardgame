@@ -3,6 +3,7 @@ package main
 import gl "github.com/go-gl/gl"
 import glh "github.com/go-gl/glh"
 import rand "math/rand"
+import "math"
 
 type BattleClass int
 type Direction int
@@ -73,26 +74,40 @@ type PlayCard struct {
 	Owner int
 }
 
+// Maps an arrow index (0=SW, 1=S, ..., 7=W) to
+// an radian angle between PI/8 and 2PI
+func arrowIndexToAngle(i Direction) float64 {
+	return (2 * math.Pi) / 8.0 * float64(1+i)
+}
+
+// arrowCos computes the counter-clockwise rounded cosinus for arrow i
+// arrows on the left edge yield -1, arrows in the middle 0, arrows on the right
+// edge 1.
+func arrowCos(i Direction) float64 {
+	angle := arrowIndexToAngle(i)
+	cos := math.Cos(angle)
+	return -1 * Round(cos)
+}
+
+// arrowSin computes the counter-clockwise rounded sinus for arrow i
+// arrows on the bottom edge yield -1, arrows in the middle 0, arrows on the
+// top edge 1
+func arrowSin(i Direction) float64 {
+	angle := arrowIndexToAngle(i)
+	sin := math.Sin(angle)
+	return -1 * Round(sin)
+}
+
 func drawArrows(arrows [8]bool) {
-	for i := 0; i < 8; i++ {
+	for i := Direction(0); i < 8; i++ {
 		// determine arrow position on card
-		x, y := 0.0, 0.0
-		if i < 3 {
-			x = float64(i) * (CardWidth / 2.0)
-		} else if i == 3 {
-			x = CardWidth
-			y = CardHeight / 2.0
-		} else if i < 6 {
-			x = (6.0 - float64(i)) * (CardWidth / 2.0)
-			y = CardHeight
-		} else {
-			y = CardHeight / 2.0
-		}
+		x := 0.5 * (1 + arrowCos(i)) * CardWidth
+		y := 0.5 * (1 + arrowSin(i)) * CardHeight
 
 		if arrows[i] {
 			// draw the arrow
 			gl.Color3f(1.0, 1.0, 0)
-			glh.DrawQuadd(x, y, 2, 2)
+			glh.DrawQuadd(x-2, y-2, 4, 4)
 		}
 	}
 }
